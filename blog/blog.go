@@ -56,7 +56,7 @@ type Post struct {
 	Time        string
 }
 
-// Helper functions
+/* Helper functions */
 func (blog *Blog) getPostCount() int {
 	var postCount *int
 	row := blog.Database.QueryRow("SELECT COUNT(*) FROM BlogPosts")
@@ -64,7 +64,7 @@ func (blog *Blog) getPostCount() int {
 	return *postCount
 }
 
-// Authentication middleware
+/* Authentication middleware */
 func (blog *Blog) createJWTToken(username []byte, password []byte) (string, time.Time) {
 	expires := time.Now().Add(30 * time.Minute)
 	claims := &credentials{
@@ -112,6 +112,7 @@ func (blog *Blog) validateJWTTokenMiddleware(ctx *fasthttp.RequestCtx) error {
 	return nil
 }
 
+/* DATABASE QUERIES */
 func (blog *Blog) initialiseDatabase(database string) error {
 	var err error
 	blog.Database, err = sql.Open("sqlite3", database)
@@ -156,7 +157,6 @@ func (blog *Blog) initialiseDatabase(database string) error {
 	return nil
 }
 
-// CreateUser function
 func (blog *Blog) createUser(username string, password string) error {
 	var err error
 	checkUser := blog.getUserByUsername(username)
@@ -242,6 +242,7 @@ func (blog *Blog) getPostFromID(ID int) Post {
 	return post
 }
 
+/* GET ROUTES */
 func (blog *Blog) indexRoute(ctx *fasthttp.RequestCtx) {
 	var err error
 	var pageCount []int
@@ -416,6 +417,58 @@ func (blog *Blog) editorRoute(ctx *fasthttp.RequestCtx) {
 	}
 }
 
+func (blog *Blog) loginViewRoute(ctx *fasthttp.RequestCtx) {
+	hbx := velvet.NewContext()
+
+	file, err := ioutil.ReadFile("./blog/views/login.handlebars")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	hbx.Set("Blog", blog)
+
+	result, err := velvet.Render(string(file), hbx)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx.SetContentType("text/html")
+	ctx.WriteString(result)
+}
+
+func (blog *Blog) logoutRoute(ctx *fasthttp.RequestCtx) {
+	cookie := fasthttp.AcquireCookie()
+	expires := time.Now()
+	cookie.SetKey("JWT")
+	cookie.SetValue("")
+	cookie.SetExpire(expires)
+	ctx.Response.Header.SetCookie(cookie)
+	ctx.Redirect("/blog/", fasthttp.StatusTemporaryRedirect)
+}
+
+/* POST ROUTES */
+func (blog *Blog) loginRoute(ctx *fasthttp.RequestCtx) {
+	var user *User
+	args := ctx.PostBody()
+	err := json.Unmarshal(args, &user)
+	if err != nil {
+		log.Println(err)
+	}
+	test := blog.getUserByUsername(user.Username)
+
+	if test.Password == user.Password {
+		token, expires := blog.createJWTToken([]byte(user.Username), []byte(user.Password))
+		cookie := fasthttp.AcquireCookie()
+		cookie.SetKey("JWT")
+		cookie.SetValue(token)
+		cookie.SetExpire(expires)
+		ctx.Response.Header.SetCookie(cookie)
+		fmt.Fprintf(ctx, "success")
+	} else {
+		fmt.Fprintf(ctx, "failed")
+	}
+}
+
 func (blog *Blog) createPostRoute(ctx *fasthttp.RequestCtx) {
 	var post *Post
 	err := blog.validateJWTTokenMiddleware(ctx)
@@ -483,6 +536,8 @@ func (blog *Blog) deletePostRoute(ctx *fasthttp.RequestCtx) {
 	}
 }
 
+/* STATIC ROUTES */
+
 func (blog *Blog) jsRoute(ctx *fasthttp.RequestCtx) {
 	path := fmt.Sprintf("."+blog.Path+"/js/%s", ctx.UserValue("file"))
 	ctx.SendFile(path)
@@ -493,58 +548,7 @@ func (blog *Blog) styleRoute(ctx *fasthttp.RequestCtx) {
 	ctx.SendFile(path)
 }
 
-func (blog *Blog) loginViewRoute(ctx *fasthttp.RequestCtx) {
-	hbx := velvet.NewContext()
-
-	file, err := ioutil.ReadFile("./blog/views/login.handlebars")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	hbx.Set("Blog", blog)
-
-	result, err := velvet.Render(string(file), hbx)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	ctx.SetContentType("text/html")
-	ctx.WriteString(result)
-}
-
-func (blog *Blog) loginRoute(ctx *fasthttp.RequestCtx) {
-	var user *User
-	args := ctx.PostBody()
-	err := json.Unmarshal(args, &user)
-	if err != nil {
-		log.Println(err)
-	}
-	test := blog.getUserByUsername(user.Username)
-
-	if test.Password == user.Password {
-		token, expires := blog.createJWTToken([]byte(user.Username), []byte(user.Password))
-		cookie := fasthttp.AcquireCookie()
-		cookie.SetKey("JWT")
-		cookie.SetValue(token)
-		cookie.SetExpire(expires)
-		ctx.Response.Header.SetCookie(cookie)
-		fmt.Fprintf(ctx, "success")
-	} else {
-		fmt.Fprintf(ctx, "failed")
-	}
-}
-
-func (blog *Blog) logoutRoute(ctx *fasthttp.RequestCtx) {
-	cookie := fasthttp.AcquireCookie()
-	expires := time.Now()
-	cookie.SetKey("JWT")
-	cookie.SetValue("")
-	cookie.SetExpire(expires)
-	ctx.Response.Header.SetCookie(cookie)
-	ctx.Redirect("/blog/", fasthttp.StatusTemporaryRedirect)
-}
-
-// Setup function
+// Setup sets up all the routes
 func (blog *Blog) Setup(router *router.Router, database string) error {
 	err := blog.initialiseDatabase(database)
 

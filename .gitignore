@@ -16,3 +16,6 @@
 
 # fast http compressed files
 *.gz
+
+# database
+*.db
