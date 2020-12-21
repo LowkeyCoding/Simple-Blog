@@ -1,0 +1,99 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code&display=swap");
+blockquote {
+  padding-left: 1em;
+  border-left: 2px solid #26233a;
+}
+
+pre {
+  display: block;
+  white-space: pre;
+  word-wrap: break-word;
+  background-color: #1f1d2e;
+  border: 1px solid #26233a;
+}
+pre code, pre tt {
+  white-space: pre;
+  word-wrap: normal;
+}
+
+table, th, td {
+  border-collapse: collapse;
+  border: 2px solid #26233a;
+  padding: 0.5em;
+}
+
+a:link, a:hover {
+  color: #9ccfd8;
+}
+a:active {
+  color: #c4a7e7;
+}
+a:visited {
+  color: #eb6f92;
+}
+
+h1 > a.anchor, h2 > a.anchor, h3 > a.anchor, h4 > a.anchor, h5 > a.anchor, h6 > a.anchor {
+  display: inline-block;
+  float: left;
+  height: 1.2em;
+  width: 1em;
+  margin-left: -1em;
+  position: relative;
+  outline: none;
+}
+
+/*.anchor:target { background: yellow; }*/
+h1 > a.anchor:before, h2 > a.anchor:before, h3 > a.anchor:before, h4 > a.anchor:before, h5 > a.anchor:before, h6 > a.anchor:before {
+  visibility: hidden;
+  position: absolute;
+  opacity: 0.2;
+  right: 0;
+  top: 0;
+  font-weight: 300;
+  line-height: inherit;
+  content: url(../styles/octiconlink.svg);
+  text-align: center;
+}
+
+h1 > a.anchor:before {
+  width: 0.8em;
+}
+
+h2 > a.anchor:before {
+  width: 1.2em;
+}
+
+h3 > a.anchor:before {
+  width: 1.4em;
+}
+
+h4 > a.anchor:before {
+  width: 1.6em;
+}
+
+h5 > a.anchor:before {
+  width: 1.8em;
+}
+
+h6 > a.anchor:before {
+  width: 2.2em;
+}
+
+.octiconlink {
+  fill: #c4a7e7;
+}
+
+h1 > a.anchor:hover:before, h2 > a.anchor:hover:before, h3 > a.anchor:hover:before, h4 > a.anchor:hover:before, h5 > a.anchor:hover:before, h6 > a.anchor:hover:before {
+  visibility: visible;
+  opacity: 0.8;
+}
+
+h1 > a.anchor:focus:before, h2 > a.anchor:focus:before, h3 > a.anchor:focus:before, h4 > a.anchor:focus:before, h5 > a.anchor:focus:before, h6 > a.anchor:focus:before, h1:hover .anchor:before, h2:hover .anchor:before, h3:hover .anchor:before, h4:hover .anchor:before, h5:hover .anchor:before, h6:hover .anchor:before {
+  visibility: visible;
+}
+
+hr {
+  border: 1px solid #706e86;
+}
+
+/*# sourceMappingURL=markdown.css.map */

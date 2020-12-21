@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap')
+$fira-code: 'Fira Code', monospace
+// base colors
+$base: #191724
+$surface: #1f1d2e
+$border: #26233a
+$shadow: #1f1d2e
+$subtle: #706e86
+$text: #e0def4
+$rose: #ebbcba
+$pine: #31748f
+$foam: #9ccfd8
+$iris: #c4a7e7
+$love: #eb6f92
+$gold: #f6c177
+    
+body
+    font-size: 14px
+    font-family: $fira-code
+    background-color: $base
+    color: $iris
+    overflow-wrap: break-word
+
+.container
+    display: grid
+    grid-template-columns: auto
+    grid-template-rows: auto auto
+.blog_post
+    background: $base
+    padding: 0.67em
+    margin: 2em
+    .title
+        font-size: 4em
+    .description
+        font-size: 1em
+    .time
+        font-size: 1em
+    .content
+        display: block
+        font-size: 1em
+
+.admin_tools
+    position: sticky
+    bottom: 1em
+    margin-left: auto
+    margin-right: auto
+    font-size: 16px
+    .middle
+        display: grid
+        grid-template-columns: auto auto auto
+        background-color: $base
+        border-radius: 25px
+        border: 1px solid $border
+        padding: 1em
+    .button
+        color: $love
+        cursor: pointer
+    a
+        text-decoration: none
+        &:active, &:link
+            color: $love

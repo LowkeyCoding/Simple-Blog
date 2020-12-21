@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Editor | {{ Post.Title }}</title>
+        <link rel="stylesheet" href="{{ Blog.Path }}/styles/editor.css">
+        <link rel="stylesheet" href="{{ Blog.Path }}/styles/markdown.css">
+        <link rel="stylesheet" href="{{ Blog.Path }}/styles/code.css">
+        <script type="text/javascript" src="{{ Blog.Path }}/js/markdown.js"></script>
+        <script type="text/javascript" src="{{ Blog.Path }}/js/highlight.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="c1r1">
+                <h1>Blog editor demo</h1>
+                <h3>Title: </h3>
+                <div class="input title">
+                    <input class="title" id="title" type="text" value="{{ Post.Title }}"></input>
+                </div>
+            </div>
+
+            <div class="c2r1">
+                <h1>Blog preview demo</h1>
+                <h3>live preview of the changes.</h3>
+            </div>
+
+            <div class="c1r2">
+                <h3>Description: </h3>
+                <div class="input description">
+                    <textarea class="code" id="description-input">{{ Post.Description }}</textarea>
+                </div>
+            </div>
+
+            <div class="c2r2">
+            </div>
+
+            <div class="c1r3">
+                <h3>Content: </h3>
+                <div class="input content">
+                    <textarea id="markdown-input">{{ Post.Content }}</textarea>
+                </div>
+            </div>
+
+            <div class="c2r3">
+                <div class="publish" id="publish" onclick="{{Action}}({{Post.ID}})">Publish</div>
+                <div class="output" id="html-output">
+                    <div title="Loading markdown module...">•••</div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <footer>
+        <script type="text/javascript" src="{{ Blog.Path }}/js/editor.js"></script>
+    </footer>
+</html>

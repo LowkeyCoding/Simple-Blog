@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login</title>
+        <link rel="stylesheet" href="{{ Blog.Path }}/styles/login.css">
+    </head>
+    <body>
+        <div class="login">
+            <div class="login-box">
+                <label>Username: </label>
+                <input type="text" class="username" id="username" placeholder="Username">
+                <label>Password: </label>
+                <input type="password" class="password" id="password" placeholder="Password">
+                <label></label>
+                <button id="login" onclick="Login()">Login</button>
+            </div>
+        </div>
+    </body>
+    <footer>
+        <script type="text/javascript" src="{{ Blog.Path }}/js/sha512.js"></script>
+        <script type="text/javascript" src="{{ Blog.Path }}/js/login.js"></script>
+    </footer>
+</html> 

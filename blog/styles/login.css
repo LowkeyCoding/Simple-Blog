@@ -1,0 +1,54 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code&display=swap");
+body {
+  font-size: 14px;
+  font-family: "Fira Code", monospace;
+  background-color: #191724;
+  color: #c4a7e7;
+  overflow-wrap: break-word;
+}
+
+.login {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+.login .login-box {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto;
+  grid-column-gap: 2em;
+  grid-row-gap: 2em;
+  text-align: center;
+  margin: auto;
+}
+.login .login-box label {
+  margin-top: auto;
+  margin-bottom: auto;
+  font-size: 24px;
+}
+.login .login-box button {
+  border: 1px solid #26233a;
+  border-radius: 25px;
+  background-color: #1f1d2e;
+  color: #c4a7e7;
+  padding: 1em;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+.login .login-box input {
+  height: auto;
+  border: 2px solid #26233a;
+  border-radius: 3px;
+  padding: 1rem;
+  font-size: 16px;
+  background-color: #1f1d2e;
+  color: #c4a7e7;
+}
+
+/*# sourceMappingURL=login.css.map */

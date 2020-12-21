@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{{ Blog.Path }}/styles/index.css">
+        <title>{{ Blog.Name }}</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="blog_header">
+                    <div class="first">
+                        <div class="name">{{ Blog.Name }}</div>
+                        <div class="decription">{{ Blog.Description }}</div>
+                    </div>
+                    <div class="second">
+                        {{#if LoggedIn}}
+                            <div class="menu">
+                                <div class="loggedin">
+                                    <a href="{{Blog.Path}}/editor/">New Post</a>
+                                    <div class="seperator">|</div>
+                                    <a href="{{Blog.Path}}/logout/">Logout</a>
+                                </div>
+                            </div>
+                            {{else}}
+                                <div class="menu">
+                                    <div class="loggedout">
+                                        <a href="{{Blog.Path}}/login/">Login</a>
+                                    </div>
+                                </div>
+                        {{/if}}
+                    </div>
+            </div>
+            {{#each Blog.Posts as |post|}}
+                <div class="blog_post_preview">
+                    <div class="title">
+                        <a target="_blank" rel="noopener noreferrer" href="{{Blog.Path}}/post/{{post.ID}}">
+                            {{ post.Title }}
+                        </a>
+                    </div>
+                    <div class="description">{{ post.Description }}</div>
+                    <div class="time">
+                        {{#if LoggedIn}}
+                            <a target="_blank" rel="noopener noreferrer" href="{{Blog.Path}}/editor/{{post.ID}}">Edit</a>
+                        {{/if}}{{ post.Time }}
+                    </div>
+                </div>
+            {{/each}}
+            <div class="page_selector">
+                {{#if PageCount}}
+                    {{#if LastPage}}
+                        <a  class="arrows" href="{{Blog.Path}}/posts/{{LastPage}}"><|</a>
+                        {{else}}
+                            <|
+                    {{/if}}
+
+                    {{#if MinPageCount}}
+                        <a href="{{Blog.Path}}/posts/{{MinPageCount}}">{{MinPageCount}}</a> ...
+                    {{/if}}
+
+                    {{#each PageCount as |Page|}}
+                        {{#equal Page CurrentPage}}
+                            {{Page}}
+                            {{else}}
+                                <a href="{{Blog.Path}}/posts/{{Page}}">{{Page}}</a>
+                        {{/equal}}
+                    {{/each}}
+                    
+                    {{#if MaxPageCount}}
+                        ... <a href="{{Blog.Path}}/posts/{{MaxPageCount}}">{{MaxPageCount}}</a>
+                    {{/if}}
+
+                    {{#if NextPage}}
+                        <a class="arrows" href="{{Blog.Path}}/posts/{{NextPage}}">|></a>
+                        {{else}}
+                            |>
+                    {{/if}}
+                {{/if}}
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,58 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code&display=swap");
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  border: 2px solid #26233a;
+  background: #1f1d2e;
+  color: #e0def4;
+  font-family: "Fira Code", monospace;
+}
+
+.hljs-subst {
+  color: #f6c177;
+}
+
+.hljs-comment {
+  color: #706e86;
+}
+
+.hljs-attribute, .hljs-doctag, .hljs-keyword, .hljs-meta-keyword, .hljs-name, .hljs-selector-tag {
+  color: #31748f;
+  font-weight: 700;
+}
+
+.hljs-deletion, .hljs-quote, .hljs-selector-class, .hljs-selector-id, .hljs-template-tag, .hljs-type {
+  color: #eb6f92;
+}
+
+.hljs-section, .hljs-built_in, .hljs-title, .hljs-literal, .hljs-number {
+  color: #ebbcba;
+  font-weight: 700;
+}
+
+.hljs-link, .hljs-regexp, .hljs-selector-attr, .hljs-selector-pseudo, .hljs-symbol, .hljs-template-variable, .hljs-variable {
+  color: #31748f;
+}
+
+.hljs-addition, .hljs-bullet, .hljs-code {
+  color: #31748f;
+}
+
+.hljs-meta {
+  color: #31748f;
+}
+
+.hljs-meta-string, .hljs-string {
+  color: #f6c177;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: 700;
+}
+
+/*# sourceMappingURL=code.css.map */

@@ -1,0 +1,90 @@
+// fonts
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap')
+$fira-code: 'Fira Code', monospace
+// base colors
+$base: #191724
+$surface: #1f1d2e
+$border: #26233a
+$shadow: #1f1d2e
+$subtle: #706e86
+$text: #e0def4
+$rose: #ebbcba
+$pine: #31748f
+$foam: #9ccfd8
+$iris: #c4a7e7
+$love: #eb6f92
+$gold: #f6c177
+
+body
+    display: block
+    position: relative
+    background: $base
+    color: $iris
+    font-family: $fira-code
+
+a
+    color: $iris
+    text-decoration: none
+
+.header
+  margin: 0.67em
+  overflow: auto
+  .left
+    float: left
+  .right
+    margin-top: 0.67em
+    margin-bottom: 0.67em
+    font-size: 2em
+    float: right
+
+.footer
+    display: flex
+    align-items: center
+    flex-wrap: wrap
+    margin: 0.67em
+    bottom: 0
+    .description
+        margin: 0 auto 0
+        text-align: center
+        flex-basis: 100%
+    .icons
+        margin: 0 auto 0
+        text-align: center
+        font-size: 2em
+        color: $love
+
+.projects
+    display: flex
+    flex-wrap: wrap
+    justify-content: center
+    .card
+        background: $base
+        width: 100%
+        height: 100%
+        width: 300px
+        padding: 0.67em
+        margin: 2em
+        text-align: center
+        border-radius: 25px
+        box-shadow: 0 4px 8px 0 $shadow
+        &:hover
+            box-shadow: 0 8px 16px 0 $shadow
+        .name
+            font-size: 1.5em
+        img
+            box-shadow: 0 2px 4px 0 $shadow
+            border-radius: 25px
+            margin: 0.5em 0 1em
+            max-width: 300px
+        .description
+            text-align: left
+            font-size: 0.75em
+
+.fade
+    animation: fade 2s
+
+@keyframes fade
+    from 
+        opacity: 0
+    to
+        opacity: 1

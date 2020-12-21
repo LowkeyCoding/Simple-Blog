@@ -1,0 +1,102 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code&display=swap");
+body {
+  font-size: 14px;
+  font-family: "Fira Code", monospace;
+  background-color: #191724;
+  color: #c4a7e7;
+  overflow-wrap: break-word;
+}
+
+a:link, a:hover {
+  color: #9ccfd8;
+}
+a:active {
+  color: #c4a7e7;
+}
+a:visited {
+  color: #eb6f92;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: repeat(11, auto);
+}
+
+.blog_header {
+  display: grid;
+  grid-template-columns: auto max-content;
+}
+.blog_header .name {
+  font-size: 2em;
+}
+.blog_header .description {
+  font-size: 1em;
+}
+.blog_header .menu {
+  margin-left: auto;
+}
+.blog_header .loggedin {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  font-size: 16px;
+  background-color: #191724;
+  border-radius: 25px;
+  border: 1px solid #26233a;
+  padding: 1em;
+}
+.blog_header .loggedin a {
+  text-decoration: none;
+}
+.blog_header .loggedin a:active, .blog_header .loggedin a:link {
+  color: #eb6f92;
+}
+.blog_header .loggedout {
+  font-size: 16px;
+  background-color: #191724;
+  border-radius: 25px;
+  border: 1px solid #26233a;
+  padding: 1em;
+  width: auto;
+  text-align: center;
+}
+.blog_header .loggedout a {
+  text-decoration: none;
+}
+.blog_header .loggedout a:active, .blog_header .loggedout a:link {
+  color: #eb6f92;
+}
+
+.blog_post_preview {
+  background: #191724;
+  padding: 0.67em;
+  margin: 2em;
+}
+.blog_post_preview .title {
+  font-size: 1.5em;
+}
+.blog_post_preview .description {
+  font-size: 1em;
+}
+.blog_post_preview .time {
+  font-size: 0.75em;
+}
+.blog_post_preview .time a, .blog_post_preview .title a {
+  text-decoration: none;
+}
+
+.page_selector {
+  position: sticky;
+  bottom: 1em;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 16px;
+}
+.page_selector a:active, .page_selector a:link {
+  color: #eb6f92;
+}
+.page_selector .arrows {
+  text-decoration: none;
+}
+
+/*# sourceMappingURL=index.css.map */

@@ -1,0 +1,61 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code&display=swap");
+body {
+  font-size: 14px;
+  font-family: "Fira Code", monospace;
+  background-color: #191724;
+  color: #c4a7e7;
+  overflow-wrap: break-word;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto auto;
+}
+
+.blog_post {
+  background: #191724;
+  padding: 0.67em;
+  margin: 2em;
+}
+.blog_post .title {
+  font-size: 4em;
+}
+.blog_post .description {
+  font-size: 1em;
+}
+.blog_post .time {
+  font-size: 1em;
+}
+.blog_post .content {
+  display: block;
+  font-size: 1em;
+}
+
+.admin_tools {
+  position: sticky;
+  bottom: 1em;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 16px;
+}
+.admin_tools .middle {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  background-color: #191724;
+  border-radius: 25px;
+  border: 1px solid #26233a;
+  padding: 1em;
+}
+.admin_tools .button {
+  color: #eb6f92;
+  cursor: pointer;
+}
+.admin_tools a {
+  text-decoration: none;
+}
+.admin_tools a:active, .admin_tools a:link {
+  color: #eb6f92;
+}
+
+/*# sourceMappingURL=post.css.map */
