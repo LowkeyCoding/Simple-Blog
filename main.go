@@ -16,7 +16,7 @@ func main() {
 	blog.Name = "LowkeyCoding's Blog"
 	blog.Description = "This is my personal blog for random things i find interesting"
 	blog.PostsPerPage = 10
-	blog.JWTSecret = "Spiasdandoiaubnfdaios"
+	blog.JWTSecret = "VerySecretSecret"
 
 	err := blog.Setup(router, "file:./database.db")
 	if err != nil {
