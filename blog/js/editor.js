@@ -38,7 +38,8 @@ window["markdown"].ready.then(markdown => {
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
-                location.href = xhr.response
+                response = JSON.parse(xhr.response)
+                location.href = response.Response
             }
         }
         xhr.send(JSON.stringify({
@@ -60,7 +61,8 @@ window["markdown"].ready.then(markdown => {
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
-                location.href = xhr.response
+                response = JSON.parse(xhr.response)
+                location.href = response.Response
             }
         }
         xhr.send(JSON.stringify({
