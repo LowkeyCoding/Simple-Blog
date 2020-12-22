@@ -1,4 +1,5 @@
 (()=>{
+
     window.Login = ()=>{
         username = document.getElementById("username").value
         password = SHA512(document.getElementById("password").value)
@@ -8,7 +9,7 @@
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
-                window.Callback(xhr.response)
+                window.CallbackLogin(xhr.response)
             }
         }
         xhr.send(JSON.stringify({
@@ -16,12 +17,43 @@
             Password: password
         }));
     }
-    window.Callback = (response) => {
-        console.log(response)
-        if(response == "success"){
+
+    window.RegisterUser = ()=>{
+        username = document.getElementById("username").value
+        password = document.getElementById("password").value
+        validatePassword = document.getElementById("validate-password").value
+        if(password === validatePassword){
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST",  "./register/", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    window.CallbackRegister(xhr.response)
+                }
+            }
+            xhr.send(JSON.stringify({
+                Username: username,
+                Password: SHA512(password)
+            }));
+        }
+    }
+
+    window.CallbackLogin = (response) => {
+        response = JSON.parse(response)
+        if(response.Response == "success"){
             location.href = "./posts"
 
-        } else if(response == "failed"){
+        } else if(response.Response == "failed"){
+            alert("Invalid password; please try again.")
+        }
+    }
+
+    window.CallbackRegister = (response) => {
+        response = JSON.parse(response)
+        if(response.Response == "success"){
+            location.href = "./login"
+
+        } else if(response.Response == "failed"){
             alert("Invalid password; please try again.")
         }
     }

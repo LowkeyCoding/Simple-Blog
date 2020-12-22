@@ -13,8 +13,16 @@
                 <input type="text" class="username" id="username" placeholder="Username">
                 <label>Password: </label>
                 <input type="password" class="password" id="password" placeholder="Password">
+                {{#if Setup}}
+                    <label>Validate Password: </label>
+                    <input type="password" class="password" id="validate-password" placeholder="Validate password">
+                {{/if}}
                 <label></label>
-                <button id="login" onclick="Login()">Login</button>
+                {{#if Setup}}
+                    <button id="login" onclick="RegisterUser()">Register</button>
+                    {{else}}
+                        <button id="login" onclick="Login()">Login</button>
+                {{/if}}
             </div>
         </div>
     </body>

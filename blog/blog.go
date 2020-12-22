@@ -56,12 +56,59 @@ type Post struct {
 	Time        string
 }
 
+// Response struct
+type Response struct {
+	Errors   []string
+	Response string
+}
+
 /* Helper functions */
 func (blog *Blog) getPostCount() int {
 	var postCount *int
 	row := blog.Database.QueryRow("SELECT COUNT(*) FROM BlogPosts")
 	row.Scan(&postCount)
 	return *postCount
+}
+
+func (blog *Blog) getUserCount() int {
+	var userCount *int
+	row := blog.Database.QueryRow("SELECT COUNT(*) FROM Users")
+	row.Scan(&userCount)
+	return *userCount
+}
+
+func (response *Response) appendError(err error) {
+	if err != nil {
+		response.Errors = append(response.Errors, err.Error())
+	}
+}
+
+func (response *Response) toJSON() (string, error) {
+	json, err := json.Marshal(&response)
+	return string(json), err
+}
+
+func (response *Response) unkownError() string {
+	return "Response: {\"Errors\":\"Unkown error please try again.\",\"Response\":\"failed\"}"
+}
+
+func (response *Response) writeResponse(arg interface{}) {
+	responseString, err := response.toJSON()
+	switch ctx := (arg).(type) {
+	case *fasthttp.RequestCtx:
+		if err != nil {
+			ctx.WriteString(response.unkownError())
+		} else {
+			ctx.WriteString(responseString)
+		}
+	case *velvet.Context:
+		ctx.Set("Response", response)
+	}
+
+}
+
+func (response *Response) setResponse(_response string) {
+	response.Response = _response
 }
 
 /* Authentication middleware */
@@ -244,6 +291,7 @@ func (blog *Blog) getPostFromID(ID int) Post {
 
 /* GET ROUTES */
 func (blog *Blog) indexRoute(ctx *fasthttp.RequestCtx) {
+	var response Response
 	var err error
 	var pageCount []int
 	hbx := velvet.NewContext()
@@ -256,20 +304,17 @@ func (blog *Blog) indexRoute(ctx *fasthttp.RequestCtx) {
 		pagenumber, err = strconv.Atoi(_pagenumber)
 	}
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	response.appendError(err)
 
 	if pagenumber < 1 {
 		pagenumber = 1
 	}
 
 	err = blog.getPostsFromPageNumber(pagenumber)
-	if err != nil {
-		log.Fatal(err)
-	}
+	response.appendError(err)
 
 	err = blog.validateJWTTokenMiddleware(ctx)
+	response.appendError(err)
 
 	if err != nil {
 		hbx.Set("LoggedIn", false)
@@ -317,13 +362,12 @@ func (blog *Blog) indexRoute(ctx *fasthttp.RequestCtx) {
 	hbx.Set("Blog", blog)
 
 	file, err := ioutil.ReadFile("./blog/views/index.handlebars")
-	if err != nil {
-		log.Fatal(err)
-	}
+	response.appendError(err)
 
+	response.writeResponse(hbx)
 	result, err := velvet.Render(string(file), hbx)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err.Error())
 	}
 
 	ctx.SetContentType("text/html")
@@ -331,6 +375,7 @@ func (blog *Blog) indexRoute(ctx *fasthttp.RequestCtx) {
 }
 
 func (blog *Blog) postRoute(ctx *fasthttp.RequestCtx) {
+	var response Response
 	var err error
 	var count *int
 	hbx := velvet.NewContext()
@@ -341,10 +386,7 @@ func (blog *Blog) postRoute(ctx *fasthttp.RequestCtx) {
 
 	if _ID != "" {
 		ID, err = strconv.Atoi(_ID)
-	}
-
-	if err != nil {
-		log.Fatal(err)
+		response.appendError(err)
 	}
 
 	post := blog.getPostFromID(ID)
@@ -352,6 +394,7 @@ func (blog *Blog) postRoute(ctx *fasthttp.RequestCtx) {
 	hbx.Set("Blog", blog)
 
 	err = blog.validateJWTTokenMiddleware(ctx)
+	response.appendError(err)
 	if err != nil {
 		hbx.Set("LoggedIn", false)
 	} else {
@@ -359,10 +402,9 @@ func (blog *Blog) postRoute(ctx *fasthttp.RequestCtx) {
 	}
 
 	file, err := ioutil.ReadFile("./blog/views/post.handlebars")
-	if err != nil {
-		log.Println(err)
-	}
+	response.appendError(err)
 
+	response.writeResponse(hbx)
 	result, err := velvet.Render(string(file), hbx)
 	if err != nil {
 		log.Println(err)
@@ -373,10 +415,13 @@ func (blog *Blog) postRoute(ctx *fasthttp.RequestCtx) {
 }
 
 func (blog *Blog) editorRoute(ctx *fasthttp.RequestCtx) {
+	var response Response
 	var count *int
 
 	hbx := velvet.NewContext()
 	err := blog.validateJWTTokenMiddleware(ctx)
+	response.appendError(err)
+
 	if err != nil {
 		ctx.Redirect("/blog/", fasthttp.StatusTemporaryRedirect)
 	} else {
@@ -389,10 +434,7 @@ func (blog *Blog) editorRoute(ctx *fasthttp.RequestCtx) {
 
 		if _ID != "" {
 			ID, err = strconv.Atoi(_ID)
-		}
-
-		if err != nil {
-			log.Println(err)
+			response.appendError(err)
 		}
 
 		if ID != 0 {
@@ -406,10 +448,9 @@ func (blog *Blog) editorRoute(ctx *fasthttp.RequestCtx) {
 		hbx.Set("Blog", blog)
 
 		file, err := ioutil.ReadFile("./blog/views/editor.handlebars")
-		if err != nil {
-			log.Fatal(err)
-		}
+		response.appendError(err)
 
+		response.writeResponse(hbx)
 		result, err := velvet.Render(string(file), hbx)
 
 		ctx.SetContentType("text/html")
@@ -418,14 +459,19 @@ func (blog *Blog) editorRoute(ctx *fasthttp.RequestCtx) {
 }
 
 func (blog *Blog) loginViewRoute(ctx *fasthttp.RequestCtx) {
+	var response Response
+
 	hbx := velvet.NewContext()
 
-	file, err := ioutil.ReadFile("./blog/views/login.handlebars")
-	if err != nil {
-		log.Fatal(err)
+	if string(ctx.Path()) == blog.Path+"register" {
+		hbx.Set("Setup", true)
 	}
 
+	file, err := ioutil.ReadFile("./blog/views/login.handlebars")
+	response.appendError(err)
+
 	hbx.Set("Blog", blog)
+	response.writeResponse(hbx)
 
 	result, err := velvet.Render(string(file), hbx)
 	if err != nil {
@@ -439,21 +485,24 @@ func (blog *Blog) loginViewRoute(ctx *fasthttp.RequestCtx) {
 func (blog *Blog) logoutRoute(ctx *fasthttp.RequestCtx) {
 	cookie := fasthttp.AcquireCookie()
 	expires := time.Now()
+
 	cookie.SetKey("JWT")
 	cookie.SetValue("")
 	cookie.SetExpire(expires)
 	ctx.Response.Header.SetCookie(cookie)
+
 	ctx.Redirect("/blog/", fasthttp.StatusTemporaryRedirect)
 }
 
 /* POST ROUTES */
 func (blog *Blog) loginRoute(ctx *fasthttp.RequestCtx) {
+	var response Response
 	var user *User
+
 	args := ctx.PostBody()
 	err := json.Unmarshal(args, &user)
-	if err != nil {
-		log.Println(err)
-	}
+	response.appendError(err)
+
 	test := blog.getUserByUsername(user.Username)
 
 	if test.Password == user.Password {
@@ -463,76 +512,121 @@ func (blog *Blog) loginRoute(ctx *fasthttp.RequestCtx) {
 		cookie.SetValue(token)
 		cookie.SetExpire(expires)
 		ctx.Response.Header.SetCookie(cookie)
-		fmt.Fprintf(ctx, "success")
+
+		response.setResponse("success")
+
+		response.writeResponse(ctx)
 	} else {
-		fmt.Fprintf(ctx, "failed")
+		response.setResponse("failed")
+		response.writeResponse(ctx)
+	}
+}
+
+func (blog *Blog) registerRoute(ctx *fasthttp.RequestCtx) {
+	var user *User
+	var response Response
+	userCount := blog.getUserCount()
+
+	if userCount == 0 {
+		args := ctx.PostBody()
+
+		err := json.Unmarshal(args, &user)
+		response.appendError(err)
+
+		err = blog.createUser(user.Username, user.Password)
+		response.appendError(err)
+
+		response.setResponse("success")
+
+		response.writeResponse(ctx)
+	} else {
+		response.setResponse("failed")
+		response.writeResponse(ctx)
 	}
 }
 
 func (blog *Blog) createPostRoute(ctx *fasthttp.RequestCtx) {
+	var response Response
+	var location []byte
 	var post *Post
+
 	err := blog.validateJWTTokenMiddleware(ctx)
+	response.appendError(err)
+
 	if err == nil {
 		args := ctx.PostBody()
 
 		err := json.Unmarshal(args, &post)
-		if err != nil {
-			log.Println(err)
-		}
+		response.appendError(err)
+
 		id, err := blog.createPost(post)
-		if err != nil {
-			log.Println(err)
-		}
-		var location []byte
+		response.appendError(err)
 
 		location = append(location, []byte(blog.Path)...)
 		location = append(location, []byte("post/")...)
 		strid := strconv.Itoa(int(id))
 		location = append(location, []byte(strid)...)
+		response.setResponse(string(location))
 
-		ctx.WriteString(string(location))
+		response.writeResponse(ctx)
+	} else {
+		response.writeResponse(ctx)
 	}
 }
 
 func (blog *Blog) updatePostRoute(ctx *fasthttp.RequestCtx) {
+	var response Response
+	var location []byte
 	var post *Post
+
 	err := blog.validateJWTTokenMiddleware(ctx)
+	response.appendError(err)
+
 	if err == nil {
 		args := ctx.PostBody()
 
 		err = json.Unmarshal(args, &post)
-		if err != nil {
-			log.Println(err)
-		}
+		response.appendError(err)
+
 		err = blog.updatePost(post)
-		if err != nil {
-			log.Println(err)
-		}
-		var location []byte
+		response.appendError(err)
 
 		location = append(location, []byte(blog.Path)...)
 		location = append(location, []byte("post/")...)
 		strid := strconv.Itoa(int(post.ID))
 		location = append(location, []byte(strid)...)
-		ctx.WriteString(string(location))
+		response.setResponse(string(location))
+
+		response.writeResponse(ctx)
+	} else {
+		response.writeResponse(ctx)
 	}
 }
 
 func (blog *Blog) deletePostRoute(ctx *fasthttp.RequestCtx) {
+	var response Response
+	var location []byte
+
 	err := blog.validateJWTTokenMiddleware(ctx)
+	response.appendError(err)
+
 	if err == nil {
 		_ID, _ := ctx.UserValue("ID").(string)
 		ID := 0
 		if _ID != "" {
 			ID, err = strconv.Atoi(_ID)
+			response.appendError(err)
 		}
-		if err != nil {
-			log.Println(err)
-		}
+
 		err = blog.deletePost(ID)
-		if err != nil {
-			log.Println(err)
-		}
+		response.appendError(err)
+
+		location = append(location, []byte(blog.Path)...)
+		location = append(location, []byte("posts/")...)
+
+		response.writeResponse(ctx)
+	} else {
+		response.writeResponse(ctx)
 	}
 }
 
@@ -553,6 +647,8 @@ func (blog *Blog) Setup(router *router.Router, database string) error {
 	err := blog.initialiseDatabase(database)
 
 	/* USER ROUTES */
+
+	/* GET ROUTES */
 	router.GET(blog.Path, blog.indexRoute)
 	router.GET(blog.Path+"posts", blog.indexRoute)
 	router.GET(blog.Path+"posts/{pagenumber}", blog.indexRoute)
@@ -561,11 +657,19 @@ func (blog *Blog) Setup(router *router.Router, database string) error {
 	router.GET(blog.Path+"styles/{file}", blog.styleRoute)
 	router.GET(blog.Path+"login", blog.loginViewRoute)
 	router.GET(blog.Path+"logout", blog.logoutRoute)
+	router.GET(blog.Path+"register", blog.loginViewRoute)
+
+	/* POST ROUTES */
 	router.POST(blog.Path+"login", blog.loginRoute)
+	router.POST(blog.Path+"register", blog.registerRoute)
 
 	/* ADMIN ROUTES */
+
+	/* GET ROUTES */
 	router.GET(blog.Path+"editor/", blog.editorRoute)
 	router.GET(blog.Path+"editor/{ID}", blog.editorRoute)
+
+	/* POST ROUTES */
 	router.POST(blog.Path+"newPost", blog.createPostRoute)
 	router.POST(blog.Path+"updatePost/{ID}", blog.updatePostRoute)
 	router.POST(blog.Path+"deletePost/{ID}", blog.deletePostRoute)
