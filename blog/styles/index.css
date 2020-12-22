@@ -45,6 +45,10 @@ a:visited {
   border: 1px solid #26233a;
   padding: 1em;
 }
+.blog_header .loggedin .seperator {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
 .blog_header .loggedin a {
   text-decoration: none;
 }

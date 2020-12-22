@@ -314,8 +314,9 @@ func (blog *Blog) indexRoute(ctx *fasthttp.RequestCtx) {
 	response.appendError(err)
 
 	err = blog.validateJWTTokenMiddleware(ctx)
-	response.appendError(err)
-
+	if err.Error() != "Login required" {
+		response.appendError(err)
+	}
 	if err != nil {
 		hbx.Set("LoggedIn", false)
 	} else {
@@ -394,7 +395,6 @@ func (blog *Blog) postRoute(ctx *fasthttp.RequestCtx) {
 	hbx.Set("Blog", blog)
 
 	err = blog.validateJWTTokenMiddleware(ctx)
-	response.appendError(err)
 	if err != nil {
 		hbx.Set("LoggedIn", false)
 	} else {

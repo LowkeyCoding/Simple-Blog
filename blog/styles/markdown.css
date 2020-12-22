@@ -10,10 +10,12 @@ pre {
   word-wrap: break-word;
   background-color: #1f1d2e;
   border: 1px solid #26233a;
+  font-family: "Fira Code", monospace;
 }
 pre code, pre tt {
   white-space: pre;
   word-wrap: normal;
+  font-family: "Fira Code", monospace;
 }
 
 table, th, td {

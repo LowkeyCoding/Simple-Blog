@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Fira+Code&display=swap");
 body {
   font-size: 14px;
-  font-family: "Fira Code", monospace;
+  font-family: "Fira Code", monospace !important;
   background-color: #191724;
   color: #c4a7e7;
   overflow-wrap: break-word;

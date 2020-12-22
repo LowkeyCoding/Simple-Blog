@@ -56,6 +56,7 @@ window["markdown"].ready.then(markdown => {
         })
         html.innerHTML = _html
         window.updateCodeHighlight()
+        
         var xhr = new XMLHttpRequest();
         xhr.open("POST",  "../updatePost/"+id, true);
         xhr.setRequestHeader('Content-Type', 'application/json');

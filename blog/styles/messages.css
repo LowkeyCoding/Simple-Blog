@@ -1,0 +1,28 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code&display=swap");
+/* The alert message box */
+.alert {
+  padding: 1em;
+  background-color: #eb6f92;
+  color: #191724;
+  margin-bottom: 1em;
+  border-radius: 25px;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+/* The close button */
+.closebtn {
+  margin-left: 15px;
+  color: #c4a7e7;
+  font-weight: bold;
+  float: right;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 40px;
+  line-height: 20px;
+}
+.closebtn:hover {
+  color: #191724;
+}
+
+/*# sourceMappingURL=messages.css.map */
