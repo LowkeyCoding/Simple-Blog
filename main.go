@@ -22,8 +22,5 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err != nil {
-		log.Println(err)
-	}
 	log.Fatal(fasthttp.ListenAndServe("0.0.0.0:8080", router.Handler))
 }
