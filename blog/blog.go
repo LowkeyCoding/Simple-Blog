@@ -111,6 +111,12 @@ func (response *Response) setResponse(_response string) {
 	response.Response = _response
 }
 
+func handleError(err error) {
+	if err != nil {
+		log.Println(err)
+	}
+}
+
 /* Authentication middleware */
 func (blog *Blog) createJWTToken(username []byte, password []byte) (string, time.Time) {
 	expires := time.Now().Add(30 * time.Minute)
@@ -314,10 +320,11 @@ func (blog *Blog) indexRoute(ctx *fasthttp.RequestCtx) {
 	response.appendError(err)
 
 	err = blog.validateJWTTokenMiddleware(ctx)
-	if err.Error() != "Login required" {
-		response.appendError(err)
-	}
+
 	if err != nil {
+		if err.Error() != "Login required" {
+			response.appendError(err)
+		}
 		hbx.Set("LoggedIn", false)
 	} else {
 		hbx.Set("LoggedIn", true)
@@ -363,13 +370,11 @@ func (blog *Blog) indexRoute(ctx *fasthttp.RequestCtx) {
 	hbx.Set("Blog", blog)
 
 	file, err := ioutil.ReadFile("./blog/views/index.handlebars")
-	response.appendError(err)
+	handleError(err)
 
 	response.writeResponse(hbx)
 	result, err := velvet.Render(string(file), hbx)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
+	handleError(err)
 
 	ctx.SetContentType("text/html")
 	ctx.WriteString(result)
@@ -402,13 +407,11 @@ func (blog *Blog) postRoute(ctx *fasthttp.RequestCtx) {
 	}
 
 	file, err := ioutil.ReadFile("./blog/views/post.handlebars")
-	response.appendError(err)
+	handleError(err)
 
 	response.writeResponse(hbx)
 	result, err := velvet.Render(string(file), hbx)
-	if err != nil {
-		log.Println(err)
-	}
+	handleError(err)
 
 	ctx.SetContentType("text/html")
 	ctx.WriteString(result)
@@ -448,7 +451,7 @@ func (blog *Blog) editorRoute(ctx *fasthttp.RequestCtx) {
 		hbx.Set("Blog", blog)
 
 		file, err := ioutil.ReadFile("./blog/views/editor.handlebars")
-		response.appendError(err)
+		handleError(err)
 
 		response.writeResponse(hbx)
 		result, err := velvet.Render(string(file), hbx)
@@ -474,9 +477,7 @@ func (blog *Blog) loginViewRoute(ctx *fasthttp.RequestCtx) {
 	response.writeResponse(hbx)
 
 	result, err := velvet.Render(string(file), hbx)
-	if err != nil {
-		log.Fatal(err)
-	}
+	handleError(err)
 
 	ctx.SetContentType("text/html")
 	ctx.WriteString(result)
