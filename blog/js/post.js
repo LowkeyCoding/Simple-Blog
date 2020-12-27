@@ -6,7 +6,14 @@ window.deletePost = (ID) => {
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
-                location.href = xhr.response
+                response = JSON.parse(xhr.response)
+                for(error in response.Errors){
+                    createMessage(response.Errors[error])
+                }
+                console.log(response)
+                if (response.Response != ""){
+                    location.href = response.Response
+                }
             }
         }
         xhr.send();

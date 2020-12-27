@@ -1,0 +1,23 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code&display=swap");
+*::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+*::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #c4a7e7;
+  border-radius: 50px;
+}
+*::-webkit-scrollbar-track {
+  background: #191724;
+  width: 46px;
+  border-radius: 50px;
+}
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/*# sourceMappingURL=scrollbar.css.map */

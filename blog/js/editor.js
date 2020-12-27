@@ -39,7 +39,13 @@ window["markdown"].ready.then(markdown => {
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
                 response = JSON.parse(xhr.response)
-                location.href = response.Response
+                for(error in response.Errors){
+                    createMessage(response.Errors[error])
+                }
+                console.log(response)
+                if (response.Response != ""){
+                    location.href = response.Response
+                }
             }
         }
         xhr.send(JSON.stringify({
@@ -63,7 +69,13 @@ window["markdown"].ready.then(markdown => {
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
                 response = JSON.parse(xhr.response)
-                location.href = response.Response
+                for(error in response.Errors){
+                    createMessage(response.Errors[error])
+                }
+                console.log(response)
+                if (response.Response != ""){
+                    location.href = response.Response
+                }
             }
         }
         xhr.send(JSON.stringify({

@@ -43,8 +43,11 @@
         if(response.Response == "success"){
             location.href = "./posts"
 
-        } else if(response.Response == "failed"){
-            alert("Invalid password; please try again.")
+        } else {
+            createMessage(response.Response);
+            for(error in response.Error){
+                createMessage(response.Errors[error])
+            }
         }
     }
 
@@ -52,9 +55,8 @@
         response = JSON.parse(response)
         if(response.Response == "success"){
             location.href = "./login"
-
-        } else if(response.Response == "failed"){
-            alert("Invalid password; please try again.")
+        } else {
+            createMessage(response.Response);
         }
     }
 })()

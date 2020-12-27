@@ -518,7 +518,7 @@ func (blog *Blog) loginRoute(ctx *fasthttp.RequestCtx) {
 
 		response.writeResponse(ctx)
 	} else {
-		response.setResponse("failed")
+		response.setResponse("Invalid password, please try again.")
 		response.writeResponse(ctx)
 	}
 }
@@ -532,18 +532,20 @@ func (blog *Blog) registerRoute(ctx *fasthttp.RequestCtx) {
 		args := ctx.PostBody()
 
 		err := json.Unmarshal(args, &user)
-		response.appendError(err)
-
-		err = blog.createUser(user.Username, user.Password)
-		response.appendError(err)
-
-		response.setResponse("success")
-
-		response.writeResponse(ctx)
+		if err != nil {
+			response.appendError(err)
+		} else {
+			err = blog.createUser(user.Username, user.Password)
+			if err != nil {
+				response.appendError(err)
+			} else {
+				response.setResponse("success")
+			}
+		}
 	} else {
 		response.setResponse("failed")
-		response.writeResponse(ctx)
 	}
+	response.writeResponse(ctx)
 }
 
 func (blog *Blog) createPostRoute(ctx *fasthttp.RequestCtx) {
@@ -552,27 +554,29 @@ func (blog *Blog) createPostRoute(ctx *fasthttp.RequestCtx) {
 	var post *Post
 
 	err := blog.validateJWTTokenMiddleware(ctx)
-	response.appendError(err)
-
-	if err == nil {
+	if err != nil {
+		response.appendError(err)
+	} else {
 		args := ctx.PostBody()
 
-		err := json.Unmarshal(args, &post)
-		response.appendError(err)
+		err = json.Unmarshal(args, &post)
+		if err != nil {
+			response.appendError(err)
+		} else {
+			ID, err := blog.createPost(post)
 
-		id, err := blog.createPost(post)
-		response.appendError(err)
-
-		location = append(location, []byte(blog.Path)...)
-		location = append(location, []byte("post/")...)
-		strid := strconv.Itoa(int(id))
-		location = append(location, []byte(strid)...)
-		response.setResponse(string(location))
-
-		response.writeResponse(ctx)
-	} else {
-		response.writeResponse(ctx)
+			if err != nil {
+				response.appendError(err)
+			} else {
+				location = append(location, []byte(blog.Path)...)
+				location = append(location, []byte("post/")...)
+				strid := strconv.Itoa(int(ID))
+				location = append(location, []byte(strid)...)
+				response.setResponse(string(location))
+			}
+		}
 	}
+	response.writeResponse(ctx)
 }
 
 func (blog *Blog) updatePostRoute(ctx *fasthttp.RequestCtx) {
@@ -581,27 +585,29 @@ func (blog *Blog) updatePostRoute(ctx *fasthttp.RequestCtx) {
 	var post *Post
 
 	err := blog.validateJWTTokenMiddleware(ctx)
-	response.appendError(err)
-
-	if err == nil {
+	if err != nil {
+		response.appendError(err)
+	} else {
 		args := ctx.PostBody()
 
 		err = json.Unmarshal(args, &post)
-		response.appendError(err)
+		if err != nil {
+			response.appendError(err)
+		} else {
+			err = blog.updatePost(post)
 
-		err = blog.updatePost(post)
-		response.appendError(err)
-
-		location = append(location, []byte(blog.Path)...)
-		location = append(location, []byte("post/")...)
-		strid := strconv.Itoa(int(post.ID))
-		location = append(location, []byte(strid)...)
-		response.setResponse(string(location))
-
-		response.writeResponse(ctx)
-	} else {
-		response.writeResponse(ctx)
+			if err != nil {
+				response.appendError(err)
+			} else {
+				location = append(location, []byte(blog.Path)...)
+				location = append(location, []byte("post/")...)
+				strid := strconv.Itoa(int(post.ID))
+				location = append(location, []byte(strid)...)
+				response.setResponse(string(location))
+			}
+		}
 	}
+	response.writeResponse(ctx)
 }
 
 func (blog *Blog) deletePostRoute(ctx *fasthttp.RequestCtx) {
@@ -609,26 +615,28 @@ func (blog *Blog) deletePostRoute(ctx *fasthttp.RequestCtx) {
 	var location []byte
 
 	err := blog.validateJWTTokenMiddleware(ctx)
-	response.appendError(err)
-
-	if err == nil {
+	if err != nil {
+		response.appendError(err)
+	} else {
 		_ID, _ := ctx.UserValue("ID").(string)
 		ID := 0
 		if _ID != "" {
 			ID, err = strconv.Atoi(_ID)
-			response.appendError(err)
 		}
-
-		err = blog.deletePost(ID)
-		response.appendError(err)
-
-		location = append(location, []byte(blog.Path)...)
-		location = append(location, []byte("posts/")...)
-
-		response.writeResponse(ctx)
-	} else {
-		response.writeResponse(ctx)
+		if err != nil {
+			response.appendError(err)
+		} else {
+			err = blog.deletePost(ID)
+			if err != nil {
+				response.appendError(err)
+			} else {
+				location = append(location, []byte(blog.Path)...)
+				location = append(location, []byte("posts/")...)
+				response.Response = string(location)
+			}
+		}
 	}
+	response.writeResponse(ctx)
 }
 
 /* STATIC ROUTES */
