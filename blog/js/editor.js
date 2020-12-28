@@ -30,9 +30,10 @@ window["markdown"].ready.then(markdown => {
     }
 
     window.publishPost = () => {
-        _html = markdown.parse(document.getElementById("markdown-input").value, {
+        html.innerHTML = markdown.parse(md.value, {
             parseFlags: markdown.ParseFlags.DEFAULT | markdown.ParseFlags.NO_HTML,
         })
+        window.updateCodeHighlight()
         var xhr = new XMLHttpRequest();
         xhr.open("POST",  "../newPost", true);
         xhr.setRequestHeader('Content-Type', 'application/json');
@@ -52,15 +53,14 @@ window["markdown"].ready.then(markdown => {
             Title: title.value,
             Description: description.value,
             Content: md.value,
-            HTML: _html,
+            HTML: html.innerHTML,
         }));
     }
 
     window.updatePost = (id) => {
-        _html = markdown.parse(document.getElementById("markdown-input").value, {
+        html.innerHTML = markdown.parse(md.value, {
             parseFlags: markdown.ParseFlags.DEFAULT | markdown.ParseFlags.NO_HTML,
         })
-        html.innerHTML = _html
         window.updateCodeHighlight()
         
         var xhr = new XMLHttpRequest();
